@@ -1,0 +1,267 @@
+/* ===================================================
+   AVOID THE BLOCKS — neon arcade cabinet theme
+   =================================================== */
+
+:root {
+  --bg: #0b0f19;
+  --panel: #121826;
+  --cyan: #7ef9ff;
+  --cyan-dim: #2fb6c4;
+  --danger: #ff3864;
+  --gold: #ffd166;
+  --ink: #e8f1f2;
+  --ink-dim: #7a8699;
+  --font-display: 'Press Start 2P', monospace;
+  --font-body: 'Space Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#arcade {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  height: 100vh;
+  max-height: 860px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 60px rgba(126, 249, 255, 0.08) inset;
+}
+
+#shake-wrap {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* ---------- CRT overlay (signature element) ---------- */
+#crt-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.025) 0px,
+      rgba(255,255,255,0.025) 1px,
+      transparent 2px,
+      transparent 3px
+    );
+  box-shadow: inset 0 0 140px rgba(0,0,0,0.85);
+  mix-blend-mode: overlay;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  background: linear-gradient(to bottom, rgba(18,24,38,0.95), rgba(18,24,38,0));
+  z-index: 20;
+  position: relative;
+}
+
+.hud-block { display: flex; flex-direction: column; gap: 4px; }
+.hud-right { align-items: flex-end; }
+
+.hud-label {
+  font-family: var(--font-display);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--ink-dim);
+}
+
+.hud-value {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--cyan);
+  text-shadow: 0 0 8px rgba(126, 249, 255, 0.6);
+  transition: transform 0.15s ease;
+}
+
+.hud-value.bump { transform: scale(1.25); color: var(--gold); text-shadow: 0 0 12px rgba(255, 209, 102, 0.8); }
+
+#high-score { color: var(--gold); text-shadow: 0 0 8px rgba(255, 209, 102, 0.5); }
+
+/* ---------- Canvas ---------- */
+#game-canvas {
+  flex: 1;
+  width: 100%;
+  display: block;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(126,249,255,0.05), transparent 60%),
+    var(--panel);
+}
+
+/* ---------- Overlays / Screens ---------- */
+.screen {
+  position: absolute;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: rgba(11, 15, 25, 0.88);
+  backdrop-filter: blur(2px);
+  text-align: center;
+  padding: 24px;
+  animation: fadeIn 0.35s ease;
+}
+
+.hidden { display: none !important; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.title-wrap { display: flex; flex-direction: column; gap: 10px; }
+
+.glitch-title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 6vw, 30px);
+  color: var(--cyan);
+  text-shadow:
+    0 0 6px rgba(126, 249, 255, 0.7),
+    2px 0 var(--danger),
+    -2px 0 var(--gold);
+  letter-spacing: 2px;
+  line-height: 1.5;
+}
+
+.subtitle {
+  font-family: var(--font-body);
+  font-size: 12px;
+  color: var(--ink-dim);
+  letter-spacing: 1px;
+}
+
+.arcade-btn {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--bg);
+  background: var(--cyan);
+  border: none;
+  padding: 16px 40px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(126, 249, 255, 0.5), 0 6px 0 var(--cyan-dim);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  letter-spacing: 1px;
+}
+
+.arcade-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 0 20px rgba(126, 249, 255, 0.5), 0 2px 0 var(--cyan-dim);
+}
+
+.controls-hint {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.5px;
+}
+
+#countdown-number {
+  font-family: var(--font-display);
+  font-size: 72px;
+  color: var(--gold);
+  text-shadow: 0 0 24px rgba(255, 209, 102, 0.8);
+  animation: pulseCount 1s ease;
+}
+
+@keyframes pulseCount {
+  0% { transform: scale(0.4); opacity: 0; }
+  40% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pause-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--gold);
+  text-shadow: 0 0 12px rgba(255, 209, 102, 0.7);
+}
+
+.gameover-title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 5.5vw, 24px);
+  color: var(--danger);
+  text-shadow: 0 0 14px rgba(255, 56, 100, 0.7);
+}
+
+.final-score {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.new-best {
+  font-family: var(--font-body);
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 13px;
+  animation: pulseCount 0.6s ease infinite alternate;
+}
+
+/* ---------- Mobile touch controls ---------- */
+.mobile-controls {
+  display: flex;
+  gap: 10px;
+  padding: 10px 14px 16px;
+  background: var(--bg);
+}
+
+.move-btn {
+  flex: 1;
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: var(--cyan);
+  background: var(--panel);
+  border: 1px solid rgba(126, 249, 255, 0.3);
+  border-radius: 6px;
+  padding: 14px 0;
+  letter-spacing: 1px;
+}
+
+.move-btn:active { background: rgba(126, 249, 255, 0.15); }
+
+@media (min-width: 720px) {
+  .mobile-controls { display: none; }
+}
+
+/* ---------- Screen shake ---------- */
+.shake {
+  animation: shakeAnim 0.28s ease;
+}
+
+@keyframes shakeAnim {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-6px, 3px); }
+  40% { transform: translate(5px, -4px); }
+  60% { transform: translate(-4px, 4px); }
+  80% { transform: translate(4px, -2px); }
+  100% { transform: translate(0, 0); }
+}
